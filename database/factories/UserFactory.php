@@ -1,5 +1,7 @@
 <?php
 
+use App\User;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 /*
@@ -13,11 +15,23 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\User::class, function (Faker $faker) {
+$factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'remember_token' => str_random(10),
+        'description' => $faker->sentence(4),
+        'type' => 'user',
+        'confirmed_at' => null,
+        'suspended_at' => null
     ];
 });
+
+$factory->state(User::class, 'confirmed', [
+    'confirmed_at' => Carbon::now()->toDateTimeString()
+]);
+
+$factory->state(User::class, 'suspended', [
+    'suspended_at' => Carbon::now()->toDateTimeString()
+]);

@@ -62,4 +62,13 @@ class User extends Authenticatable
         $this->save();
         return $this;
     }
+
+    /*----------------------------------------------------
+    * Scopes
+    --------------------------------------------------- */
+    public function scopeWhereActive($query)
+    {
+        return $query->whereNotNull('confirmed_at')
+                    ->whereNull('suspended_at');
+    }
 }

@@ -8,5 +8,5 @@ if(!app()->environment('testing')){
     $middleware[] = 'auth:api';
 }
 Route::middleware($middleware)->group(function(){
-    get('me', 'UserController@show');
+    Route::get('me', 'UserController@show');
 });

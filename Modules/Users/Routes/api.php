@@ -3,4 +3,10 @@
 Route::post('register', 'RegistrationController@store');
 Route::post('login', 'LoginController@index');
 
-Route::middleware('auth:api')->get('me', 'UserController@show');
+$middleware = [];
+if(!app()->environment('testing')){
+    $middleware[] = 'auth:api';
+}
+Route::middleware($middleware)->group(function(){
+    get('me', 'UserController@show');
+});

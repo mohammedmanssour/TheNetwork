@@ -4,13 +4,12 @@ namespace Modules\Users\Tests;
 
 use App\User;
 use Tests\TestCase;
-use Tests\ApiAuthorization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserApiTest extends TestCase
 {
-    use DatabaseMigrations, ApiAuthorization;
+    use DatabaseMigrations;
 
     public function setUp()
     {

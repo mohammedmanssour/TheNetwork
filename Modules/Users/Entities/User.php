@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     protected $fillable = [
-        'name', 'email', 'description', 'type', 'confirmed_at', 'suspended_at'
+        'name', 'email', 'password', 'description', 'type', 'confirmed_at', 'suspended_at'
     ];
 
     /**

@@ -16,7 +16,8 @@ class LoginTest extends TestCase
 
         $this->user = factory(\App\User::class)->create([
             'email' => 'manssour.mohammed@gmail.com',
-            'password' => bcrypt('secret')
+            'password' => bcrypt('secret'),
+            'api_token' => null
         ]);
     }
     /** @test */
@@ -24,15 +25,18 @@ class LoginTest extends TestCase
     {
         $this->user->confirmed();
 
-        $this->json('post', 'api/login',[
-            'email' => 'manssour.mohammed@gmail.com',
-            'password' => 'secret'
-        ])
-        ->assertRequestIsSuccessful()
-        ->assertJsonStructure([
-            'data' => ['id', 'name', 'email', 'description'],
-            'meta' => ['token', 'code', 'message'],
-        ]);
+        $res = $this->json('post', 'api/login',[
+                'email' => 'manssour.mohammed@gmail.com',
+                'password' => 'secret'
+            ])
+            ->assertRequestIsSuccessful()
+            ->assertJsonStructure([
+                'data' => ['id', 'name', 'email', 'description'],
+                'meta' => ['token', 'code', 'message'],
+            ]);
+
+        $data = json_decode($res->getContent());
+        $this->assertNotNull($data->meta->token);
     }
 
     /** @test */

@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('description')->nullable();
             $table->string('type')->default('user');
-            $table->rememberToken();
+            $table->string('api_token', 60)->unique()->nullable();
             $table->timestamp('confirmed_at')->nullable();
             $table->timestamp('suspended_at')->nullable();
             $table->timestamps();

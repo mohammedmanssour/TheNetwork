@@ -63,6 +63,12 @@ class User extends Authenticatable
         return $this;
     }
 
+    public function setApiToken($token)
+    {
+        $this->api_token = $token;
+        $this->save();
+    }
+
     /*----------------------------------------------------
     * Scopes
     --------------------------------------------------- */

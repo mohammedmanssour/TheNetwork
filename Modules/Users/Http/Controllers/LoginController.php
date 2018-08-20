@@ -25,11 +25,13 @@ class LoginController extends Controller
             );
         }
 
+        $user->setApiToken(str_random(60));
+
         return response()->json(
             fractal()
                 ->item($user)
                 ->transformWith($userTransformer)
-                ->addMeta(['token' => $user->getRememberToken()])
+                ->addMeta(['token' => $user->api_token])
                 ->withContentMeta()
                 ->toArray(),
             200

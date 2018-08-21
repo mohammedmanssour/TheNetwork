@@ -21,6 +21,7 @@ class PostsController extends Controller
     {
         $models = Post::with('user')
                     ->withMedia(['images'])
+                    ->withCount('comments')
                     ->paginate(20);
 
         return response()->json(

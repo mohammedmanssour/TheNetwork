@@ -24,7 +24,8 @@ class PostTransformer extends TransformerAbstract
         return [
             'id' => $model->id,
             'content' => $model->content,
-            'images' => $model->getMedia('images')->pluck('id')->all()
+            'images' => $model->getMedia('images')->pluck('id')->all(),
+            'comments_count' => $model->comments_count
         ];
     }
 

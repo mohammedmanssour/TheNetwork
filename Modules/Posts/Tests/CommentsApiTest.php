@@ -161,6 +161,31 @@ class CommentsApiTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function can_get_comments_count()
+    {
+        $comment = factory(Comment::class,33)->create([
+            'model_id' => $this->post->id,
+            'model_type' => get_class($this->post),
+            'content' => 'This is post comment'
+        ]);
+
+        $post = Post::withCount('comments')->find($this->post->id);
+        $this->assertEquals(33, $post->comments_count);
+    }
+
+    /** @test */
+    public function can_get_comments_count_from_attribute()
+    {
+        $comment = factory(Comment::class, 33)->create([
+            'model_id' => $this->post->id,
+            'model_type' => get_class($this->post),
+            'content' => 'This is post comment'
+        ]);
+        $post = Post::find($this->post->id);
+        $this->assertEquals(33, $post->comments_count);
+    }
+
     private function sendCommentRequest($method, $uri)
     {
         $res = $this->json($method, $uri, [

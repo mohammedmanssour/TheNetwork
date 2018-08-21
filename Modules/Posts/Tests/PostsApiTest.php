@@ -141,7 +141,7 @@ class PostsApiTest extends TestCase
             ->assertRequestIsSuccessful()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'content', 'user', 'images']
+                    '*' => ['id', 'content', 'user', 'images', 'comments_count']
                 ]
             ])
             ->assertJsonCount($expectedCount, 'data');
@@ -161,7 +161,7 @@ class PostsApiTest extends TestCase
         $this->json($method, $uri,$data)
             ->assertRequestIsSuccessful()
             ->assertJsonStructure([
-                'data' => ['id', 'content', 'user', 'images']
+                'data' => ['id', 'content', 'user', 'images', 'comments_count']
             ])
             ->assertJsonFragment([
                 'content' => 'This is post content',

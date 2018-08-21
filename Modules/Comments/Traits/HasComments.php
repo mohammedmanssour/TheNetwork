@@ -72,4 +72,22 @@ trait HasComments{
         return $this->comments()->where('id', $id)->first();
     }
 
+    /*----------------------------------------------------
+    * Attributes
+    --------------------------------------------------- */
+    /**
+     * get comments count attribute
+     *
+     * @return integer
+     */
+    public function getCommentsCountAttribute()
+    {
+        if(isset($this->getAttributes()['comments_count']))
+        {
+            return $this->getAttributes()['comments_count'];
+        }
+
+        return $this->comments()->count();
+    }
+
 }

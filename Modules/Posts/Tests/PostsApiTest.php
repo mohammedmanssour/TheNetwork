@@ -6,6 +6,7 @@ use App\User;
 use Tests\TestCase;
 use Plank\Mediable\Media;
 use Modules\Posts\Entities\Post;
+use Modules\Comments\Entities\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -134,6 +135,17 @@ class PostsApiTest extends TestCase
         $this->assertNull($post->deleted_at);
     }
 
+    /** @test */
+    public function can_see_post_info()
+    {
+        $post = factory(Post::class)->create([
+            'content' => 'This is post content',
+            'user_id' => $this->user->id
+        ]);
+        $post->media()->delete();
+
+        $res = $this->sendPostRequest('get',"api/posts/{$post->id}", false);
+    }
 
     private function sendPostsRequest($uri, $expectedCount)
     {
@@ -158,20 +170,22 @@ class PostsApiTest extends TestCase
             $data['images'] = $media->pluck('id')->all();
         }
 
-        $this->json($method, $uri,$data)
-            ->assertRequestIsSuccessful()
-            ->assertJsonStructure([
-                'data' => ['id', 'content', 'user', 'images', 'comments_count']
-            ])
-            ->assertJsonFragment([
-                'content' => 'This is post content',
-                'images' => $includeImages ? $media->pluck('id')->all() : []
-            ]);
+        $res = $this->json($method, $uri,$data)
+                ->assertRequestIsSuccessful()
+                ->assertJsonStructure([
+                    'data' => ['id', 'content', 'user', 'images', 'comments_count']
+                ])
+                ->assertJsonFragment([
+                    'content' => 'This is post content',
+                    'images' => $includeImages ? $media->pluck('id')->all() : []
+                ]);
 
         $this->assertDatabaseHas('posts', [
             'content' => 'This is post content',
             'user_id' => $this->user->id
         ]);
+
+        return $res;
     }
 
     public function sendInvalidContentPostRequest($method, $uri)

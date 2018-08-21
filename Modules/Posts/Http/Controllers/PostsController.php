@@ -20,6 +20,7 @@ class PostsController extends Controller
     public function index(PostTransformer $postTransformer)
     {
         $models = Post::with('user')
+                    ->with('user.media')
                     ->withMedia(['images'])
                     ->withCount('comments')
                     ->paginate(20);
@@ -46,7 +47,7 @@ class PostsController extends Controller
         return response()->json(
             fractal()
                 ->item(
-                    $post->load('user')->loadMedia('images')
+                    $post->load('user')->load('user.media')->loadMedia('images')
                 )
                 ->transformWith($postTransformer)
                 ->withContentMeta()
@@ -59,8 +60,18 @@ class PostsController extends Controller
      * Show the specified resource.
      * @return Response
      */
-    public function show()
+    public function show(Post $post, PostTransformer $postTransformer)
     {
+        $post->load('user')->load('user.media')->loadMedia(['images']);
+
+        return response()->json(
+            fractal()
+                ->item($post)
+                ->transformWith($postTransformer)
+                ->withContentMeta()
+                ->toArray(),
+            200
+        );
     }
 
     /**
@@ -78,7 +89,7 @@ class PostsController extends Controller
         return response()->json(
             fractal()
                 ->item(
-                    $post->load('user')->loadMedia('images')
+                    $post->load('user')->load('user.media')->loadMedia('images')
                 )
                 ->transformWith($postTransformer)
                 ->withContentMeta()

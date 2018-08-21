@@ -107,6 +107,33 @@ class PostsApiTest extends TestCase
         ->assertJson(['meta' => generate_meta('failure',['FORBIDDEN'])]);
     }
 
+    /** @test */
+    public function user_can_delete_post()
+    {
+        $post = factory(Post::class)->create([
+            'user_id' => $this->user->id
+        ]);
+
+        $this->json('delete', "api/posts/{$post->id}")
+            ->assertRequestIsSuccessful();
+
+        $post = Post::withTrashed()->find($post->id);
+        $this->assertNotNull($post->deleted_at);
+    }
+
+    /** @test */
+    public function user_can_not_delete_because_he_does_not_own_it()
+    {
+        $post = factory(Post::class)->create();
+
+        $this->json('delete', "api/posts/{$post->id}")
+            ->assertStatus(403)
+            ->assertJson(['meta' => generate_meta('failure',['FORBIDDEN'])]);
+
+        $post = Post::withTrashed()->find($post->id);
+        $this->assertNull($post->deleted_at);
+    }
+
 
     private function sendPostsRequest($uri, $expectedCount)
     {

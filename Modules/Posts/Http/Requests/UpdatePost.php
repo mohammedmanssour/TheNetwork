@@ -13,7 +13,7 @@ class UpdatePost extends StorePost
      *
      * @var \Modules\Posts\Entities\Post
      */
-    private $model;
+    protected $model;
 
     /**
      * Determine if the user is authorized to make this request.

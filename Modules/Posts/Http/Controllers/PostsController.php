@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Modules\Posts\Entities\Post;
 use Illuminate\Routing\Controller;
 use Modules\Posts\Http\Requests\StorePost;
+use Modules\Posts\Http\Requests\DeletePost;
 use Modules\Posts\Http\Requests\UpdatePost;
 use Modules\Posts\Transformers\PostTransformer;
 
@@ -89,7 +90,13 @@ class PostsController extends Controller
      * Remove the specified resource from storage.
      * @return Response
      */
-    public function destroy()
+    public function destroy(DeletePost $request)
     {
+        $request->findPost()->delete();
+
+        return response()->json(
+            ['meta' => generate_meta('success')],
+            200
+        );
     }
 }

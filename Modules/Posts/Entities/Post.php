@@ -4,11 +4,14 @@ namespace Modules\Posts\Entities;
 
 use Plank\Mediable\Mediable;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Comments\Traits\HasComments;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-    use SoftDeletes, Mediable;
+    use SoftDeletes,
+        Mediable,
+        HasComments;
 
     protected $fillable = [
         'content'
@@ -24,5 +27,15 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(\App\User::class);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(
+            \Modules\Comments\Entities\Comment::class,
+            'commentable',
+            'model_type',
+            'model_id'
+        );
     }
 }

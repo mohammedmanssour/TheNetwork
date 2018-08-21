@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Plank\Mediable\Exceptions\MediaUpload\FileNotSupportedException;
 
@@ -56,6 +57,13 @@ class Handler extends ExceptionHandler
             return response()->json(
                 ['meta' => generate_meta('failure', 'File type not supported')],
                 400
+            );
+        }
+
+        if($exception instanceof ModelNotFoundException){
+            return response()->json(
+                ['meta' => generate_meta('failure', ['Not Found'] )],
+                404
             );
         }
 

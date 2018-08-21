@@ -3,9 +3,12 @@
 namespace Modules\Files\Http\Controllers;
 
 use MediaUploader;
+use Plank\Mediable\Media;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FilesController extends Controller
 {
@@ -38,7 +41,13 @@ class FilesController extends Controller
      * Show the specified resource.
      * @return Response
      */
-    public function show()
+    public function show(Media $media)
     {
+        throw_if(
+            !Storage::exists($media->getDiskPath()),
+            new ModelNotFoundException()
+        );
+
+        return response()->file($media->getAbsolutePath());
     }
 }

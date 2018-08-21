@@ -9,4 +9,5 @@ Route::prefix('api')
     ->namespace('Modules\Files\Http\Controllers')
     ->group(function(){
         Route::post('files/upload', 'FilesController@store');
+        Route::get('files/{media}', 'FilesController@show');
     });

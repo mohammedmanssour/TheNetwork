@@ -4,6 +4,7 @@ namespace Modules\Files\Tests;
 
 use Tests\TestCase;
 use Plank\Mediable\Media;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -47,5 +48,22 @@ class FilesTest extends TestCase
         ->assertStatus(400)
         ->assertJson(['meta' => generate_meta('failure', 'File type not supported')]);
 
+    }
+
+    // /** @test */
+    public function can_get_file()
+    {
+        $this->withoutExceptionHandling();
+        $media = factory(Media::class)->create([
+            'disk' => 'local'
+        ]);
+
+        Storage::fake('local');
+        Storage::shouldReceive('exists')
+            ->with($media->getDiskPath())
+            ->andReturn(true);
+
+        $res = $this->json('get', "api/files/{$media->id}")
+            ->assertStatus(200);
     }
 }

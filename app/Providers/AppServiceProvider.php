@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->register(TestResponseServiceProvider::class);
+        if(class_exists(\Spatie\Fractal\Fractal::class)){
+            $this->app->register(FractalServiceProvider::class);
+        }
     }
 }

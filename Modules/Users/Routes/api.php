@@ -9,4 +9,5 @@ if(!app()->environment('testing')){
 }
 Route::middleware($middleware)->group(function(){
     Route::get('me', 'UserController@show');
+    Route::put('me', 'UserController@update');
 });

@@ -17,4 +17,12 @@ class Post extends Model
     protected $dates = [
         'deleted_at'
     ];
+
+    /*----------------------------------------------------
+    * Relationships
+    --------------------------------------------------- */
+    public function user()
+    {
+        return $this->belongsTo(\App\User::class);
+    }
 }

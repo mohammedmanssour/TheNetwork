@@ -4,7 +4,9 @@ namespace Modules\Posts\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Posts\Entities\Post;
 use Illuminate\Routing\Controller;
+use Modules\Posts\Transformers\PostTransformer;
 
 class PostsController extends Controller
 {
@@ -12,8 +14,20 @@ class PostsController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(PostTransformer $postTransformer)
     {
+        $models = Post::with('user')
+                    ->withMedia(['images'])
+                    ->paginate(20);
+
+        return response()->json(
+            fractal()
+                ->collection($models)
+                ->transformWith($postTransformer)
+                ->withContentMeta()
+                ->toArray(),
+            200
+        );
     }
 
     /**

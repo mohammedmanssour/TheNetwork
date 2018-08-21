@@ -35,7 +35,7 @@ class CommentsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->register(AuthServiceProvider::class);
     }
 
     /**
@@ -91,7 +91,7 @@ class CommentsServiceProvider extends ServiceProvider
 
     /**
      * Register an additional directory of factories.
-     * 
+     *
      * @return void
      */
     public function registerFactories()

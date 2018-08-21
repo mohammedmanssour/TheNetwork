@@ -5,6 +5,12 @@ namespace Modules\Comments\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Comments\Entities\Comment;
+use Modules\Comments\Http\Requests\StoreComment;
+use Modules\Comments\Http\Requests\UpdateComment;
+use Illuminate\Auth\Access\AuthorizationException;
+use Modules\Comments\Transformers\CommentTransformer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 abstract class CommentsController extends Controller
 {
@@ -27,8 +33,18 @@ abstract class CommentsController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(CommentTransformer $commentTransformer)
     {
+        $models = $this->model->comments()->with('user')->paginate(20);
+
+        return response()->json(
+            fractal()
+                ->collection($models)
+                ->transformWith($commentTransformer)
+                ->withContentMeta()
+                ->toArray(),
+            200
+        );
     }
 
     /**
@@ -36,8 +52,18 @@ abstract class CommentsController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreComment $request, CommentTransformer $commentTransformer)
     {
+        return response()->json(
+            fractal()
+                ->item(
+                    $this->model->createComment($request->content)->load('user')
+                )
+                ->transformWith($commentTransformer)
+                ->withContentMeta()
+                ->toArray(),
+            200
+        );
     }
 
     /**
@@ -45,16 +71,42 @@ abstract class CommentsController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function update(Request $request)
+    public function update(UpdateComment $request, CommentTransformer $commentTransformer)
     {
+        return response()->json(
+            fractal()
+                ->item(
+                    $this->model->updateComment($request->findModel(), $request->content)
+                )
+                ->transformWith($commentTransformer)
+                ->withContentMeta()
+                ->toArray(),
+            200
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      * @return Response
      */
-    public function destroy()
+    public function destroy(Request $request)
     {
+        $comment = $this->model->comment($request->comment);
+        throw_if(
+            !$comment,
+            new ModelNotFoundException()
+        );
+
+        throw_if(
+            !auth()->user()->can('delete', [$comment, $this->model]),
+            new AuthorizationException()
+        );
+
+        $comment->delete();
+        return response()->json(
+            ['meta' => generate_meta('success')],
+            200
+        );
     }
 
     public abstract function findModel(Request $request);

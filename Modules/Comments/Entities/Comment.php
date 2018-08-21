@@ -2,6 +2,7 @@
 
 namespace Modules\Comments\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
@@ -15,6 +16,14 @@ class Comment extends Model
     --------------------------------------------------- */
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get all of the owning commentable models.
+     */
+    public function commentable()
+    {
+        return $this->morphTo();
     }
 }

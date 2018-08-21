@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Plank\Mediable\Exceptions\MediaUpload\FileNotSupportedException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,6 +50,13 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof ValidationException) {
             return response()->json(['meta' => generate_meta('failure', array_flatten($exception->errors()))], 422);
+        }
+
+        if($exception instanceof FileNotSupportedException){
+            return response()->json(
+                ['meta' => generate_meta('failure', 'File type not supported')],
+                400
+            );
         }
 
         return parent::render($request, $exception);

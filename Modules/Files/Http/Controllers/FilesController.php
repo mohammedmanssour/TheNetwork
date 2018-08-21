@@ -2,6 +2,7 @@
 
 namespace Modules\Files\Http\Controllers;
 
+use MediaUploader;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -15,6 +16,22 @@ class FilesController extends Controller
      */
     public function store(Request $request)
     {
+        $file = MediaUploader::fromSource($request->file('file'))
+                    ->toDisk('local')
+                    ->toDirectory('files')
+                    ->useHashForFilename()
+                    ->setAllowedAggregateTypes(['image'])
+                    ->upload();
+
+        return response()->json(
+            [
+                'data' => [
+                    'id' => $file->id,
+                ],
+                'meta' => generate_meta('success')
+            ],
+            200
+        );
     }
 
     /**

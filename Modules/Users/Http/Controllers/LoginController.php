@@ -26,6 +26,7 @@ class LoginController extends Controller
         }
 
         $user->setApiToken(str_random(60));
+        $user->loadMedia(['profile_picture', 'cover']);
 
         return response()->json(
             fractal()

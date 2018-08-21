@@ -2,6 +2,7 @@
 
 use App\User;
 use Carbon\Carbon;
+use Plank\Mediable\Media;
 use Faker\Generator as Faker;
 
 /*
@@ -35,3 +36,16 @@ $factory->state(User::class, 'confirmed', [
 $factory->state(User::class, 'suspended', [
     'suspended_at' => Carbon::now()->toDateTimeString()
 ]);
+
+$factory->afterCreating(User::class, function ($user, $faker) {
+    $media = factory(Media::class)->create([
+        'disk' => 'local'
+    ]);
+
+    $user->syncMedia($media, 'profile_picture');
+
+    $media = factory(Media::class)->create([
+        'disk' => 'local'
+    ]);
+    $user->syncMedia($media, 'cover');
+});

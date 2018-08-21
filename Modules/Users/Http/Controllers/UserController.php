@@ -17,7 +17,9 @@ class UserController extends Controller
     {
         return response()->json(
             fractal()
-                ->item(auth()->user())
+                ->item(
+                    auth()->user()->loadMedia(['profile_picture', 'cover'])
+                )
                 ->transformWith($userTransformer)
                 ->withContentMeta()
                 ->toArray(),

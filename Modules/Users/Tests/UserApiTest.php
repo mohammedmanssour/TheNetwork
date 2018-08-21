@@ -28,16 +28,43 @@ class UserApiTest extends TestCase
     public function can_get_user_info()
     {
         $this->withoutExceptionHandling();
-        $this->json('get', 'api/me')
+        $res =$this->json('get', 'api/me')
+                ->assertRequestIsSuccessful()
+                ->assertJsonStructure([
+                    'data' => ['id', 'name', 'email', 'description', 'profile_picture', 'cover']
+                ])
+                ->assertJsonFragment([
+                        'name' => 'Mohammed Manssour',
+                        'email' => 'manssour.mohammed@gmail.com',
+                        'description' => 'senior Software Engineer'
+                ]);
+        $data = json_decode($res->getContent())->data;
+
+        $this->assertNotNull($data->id);
+        $this->assertNotNull($data->profile_picture);
+        $this->assertNotNull($data->cover);
+    }
+
+    /** @test */
+    public function can_get_user_info_if_has_no_media()
+    {
+        $this->user->media()->delete();
+        $this->withoutExceptionHandling();
+        $res = $this->json('get', 'api/me')
             ->assertRequestIsSuccessful()
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'email', 'description']
+                'data' => ['id', 'name', 'email', 'description', 'profile_picture', 'cover']
             ])
             ->assertJsonFragment([
-                    'name' => 'Mohammed Manssour',
-                    'email' => 'manssour.mohammed@gmail.com',
-                    'description' => 'senior Software Engineer'
+                'name' => 'Mohammed Manssour',
+                'email' => 'manssour.mohammed@gmail.com',
+                'description' => 'senior Software Engineer'
             ]);
+        $data = json_decode($res->getContent())->data;
+
+        $this->assertNotNull($data->id);
+        $this->assertNull($data->profile_picture);
+        $this->assertNull($data->cover);
     }
 
 }

@@ -17,6 +17,8 @@ class UserTransformer extends TransformerAbstract
             'id' => $model->id,
             'name' => $model->name,
             'email' => $model->email,
+            'profile_picture' => optional($model->firstMedia('profile_picture'))->id,
+            'cover' => optional($model->firstMedia('cover'))->id,
             'description' => $model->description
         ];
     }

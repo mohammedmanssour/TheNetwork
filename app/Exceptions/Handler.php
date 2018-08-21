@@ -3,7 +3,9 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Plank\Mediable\Exceptions\MediaUpload\FileNotSupportedException;
@@ -64,6 +66,13 @@ class Handler extends ExceptionHandler
             return response()->json(
                 ['meta' => generate_meta('failure', ['Not Found'] )],
                 404
+            );
+        }
+
+        if($exception instanceof AuthorizationException){
+            return response()->json(
+                ['meta' => generate_meta('failure', ['FORBIDDEN'] )],
+                403
             );
         }
 

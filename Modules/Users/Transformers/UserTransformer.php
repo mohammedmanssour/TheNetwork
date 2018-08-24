@@ -25,7 +25,7 @@ class UserTransformer extends TransformerAbstract
         }
 
         $info['email'] = $model->email;
-        $info['cover'] = $model->cover;
+        $info['cover'] = optional($model->firstMedia('cover'))->id;
         $info['description'] = $model->description;
 
         return $info;

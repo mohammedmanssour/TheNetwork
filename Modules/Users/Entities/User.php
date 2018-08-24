@@ -4,13 +4,15 @@ namespace Modules\Users\Entities;
 
 use Carbon\Carbon;
 use Plank\Mediable\Mediable;
+use Modules\Posts\Traits\CanLike;
 use Modules\Posts\Traits\HasPosts;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     use Mediable,
-        HasPosts;
+        HasPosts,
+        CanLike;
 
     protected $fillable = [
         'name', 'email', 'password', 'description', 'type', 'confirmed_at', 'suspended_at'

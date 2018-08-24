@@ -3,6 +3,7 @@
 namespace Modules\Posts\Entities;
 
 use Plank\Mediable\Mediable;
+use Modules\Posts\Traits\CanBeLiked;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Comments\Traits\HasComments;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +12,8 @@ class Post extends Model
 {
     use SoftDeletes,
         Mediable,
-        HasComments;
+        HasComments,
+        CanBeLiked;
 
     protected $fillable = [
         'content'

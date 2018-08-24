@@ -54,6 +54,19 @@ abstract class LikesController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
+
+        if($user->hasLiked($this->model)){
+            return response()->json([
+                'meta' => generate_meta('failure',['You have liked this post before'])
+            ], 409);
+        }
+
+        $user->like($this->model);
+        return response()->json([
+                'meta' => generate_meta('success')
+            ],200);
+
     }
 
     /**
@@ -62,6 +75,18 @@ abstract class LikesController extends Controller
      */
     public function destroy()
     {
+        $user = auth()->user();
+
+        if(!$user->hasLiked($this->model)){
+            return response()->json([
+                'meta' => generate_meta('failure', ['You have not liked this post before'])
+            ], 409);
+        }
+
+        $user->unlike($this->model);
+        return response()->json([
+            'meta' => generate_meta('success')
+        ], 200);
     }
 
     public abstract function findModel(Request $request);

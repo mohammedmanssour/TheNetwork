@@ -18,6 +18,8 @@ class LikesApiTest extends TestCase
 
         $this->user = factory(User::class)->create();
         $this->post = factory(Post::class)->create();
+
+        $this->actingAs($this->user);
     }
 
     /** @test */
@@ -40,5 +42,56 @@ class LikesApiTest extends TestCase
         $this->json('get', "api/posts/{$this->post->id}/likes?page=2")
             ->assertJsonCount(10, 'data');
 
+    }
+
+    /** @test */
+    public function user_can_like_post()
+    {
+        $this->json('post', "api/posts/{$this->post->id}/likes")
+            ->assertRequestIsSuccessful();
+
+        $this->assertEquals(1, $this->user->likes()->count());
+        $this->assertEquals(1, $this->post->likedBy()->count());
+    }
+
+    /** @test */
+    public function user_can_not_like_post_again()
+    {
+        $this->user->like($this->post);
+
+        $this->json('post', "api/posts/{$this->post->id}/likes")
+            ->assertStatus(409)
+            ->assertJson([
+                'meta' => generate_meta('failure', ['You have liked this post before'])
+            ]);
+
+        $this->assertEquals(1, $this->user->likes()->count());
+        $this->assertEquals(1, $this->post->likedBy()->count());
+
+    }
+
+    /** @test */
+    public function user_can_unlike_post()
+    {
+        $this->user->like($this->post);
+
+        $this->json('delete', "api/posts/{$this->post->id}/likes")
+            ->assertRequestIsSuccessful();
+
+        $this->assertEquals(0, $this->user->likes()->count());
+        $this->assertEquals(0, $this->post->likedBy()->count());
+    }
+
+    /** @test */
+    public function user_can_not_unlike_post_because_he_did_not_liked_post_before()
+    {
+        $this->json('delete', "api/posts/{$this->post->id}/likes")
+            ->assertStatus(409)
+            ->assertJson([
+                'meta' => generate_meta('failure', ['You have not liked this post before'])
+            ]);
+
+        $this->assertEquals(0, $this->user->likes()->count());
+        $this->assertEquals(0, $this->post->likedBy()->count());
     }
 }

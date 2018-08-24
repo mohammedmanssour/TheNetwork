@@ -6,6 +6,7 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
+    protected $basic = false;
     /**
      * A Fractal transformer.
      *
@@ -13,13 +14,31 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform($model)
     {
-        return [
+        $info = [
             'id' => $model->id,
             'name' => $model->name,
-            'email' => $model->email,
             'profile_picture' => optional($model->firstMedia('profile_picture'))->id,
-            'cover' => optional($model->firstMedia('cover'))->id,
-            'description' => $model->description
         ];
+
+        if($this->basic){
+            return $info;
+        }
+
+        $info['email'] = $model->email;
+        $info['cover'] = $model->cover;
+        $info['description'] = $model->description;
+
+        return $info;
+    }
+
+    /**
+     * notify transformer to only include basic data
+     *
+     * @return \Modules\Users\Transformers\UserTransformer
+     */
+    public function onlyBasic()
+    {
+        $this->basic = true;
+        return $this;
     }
 }

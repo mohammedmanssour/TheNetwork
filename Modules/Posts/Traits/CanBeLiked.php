@@ -11,7 +11,7 @@ trait CanBeLiked {
     --------------------------------------------------- */
     public function likedBy()
     {
-        return $this->morphToMany(User::class, 'model');
+        return $this->morphToMany(User::class, 'model', 'likes');
     }
 
 }

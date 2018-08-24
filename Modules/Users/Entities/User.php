@@ -6,13 +6,17 @@ use Carbon\Carbon;
 use Plank\Mediable\Mediable;
 use Modules\Posts\Traits\CanLike;
 use Modules\Posts\Traits\HasPosts;
+use Modules\Users\Traits\CanFollow;
+use Modules\Users\Traits\CanBeFollowed;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     use Mediable,
         HasPosts,
-        CanLike;
+        CanLike,
+        CanFollow,
+        CanBeFollowed;
 
     protected $fillable = [
         'name', 'email', 'password', 'description', 'type', 'confirmed_at', 'suspended_at'

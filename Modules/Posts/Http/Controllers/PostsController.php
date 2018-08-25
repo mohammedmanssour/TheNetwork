@@ -23,6 +23,20 @@ class PostsController extends Controller
                     ->with('user.media')
                     ->withMedia(['images'])
                     ->withCount('comments')
+                    ->withCount('likedBy')
+                    ->when(request('source') == 'feed', function($query){
+                        $query->fromFeed();
+                    })
+                    ->when(request('source') == 'me', function($query){
+                        $query->where('user_id', auth()->user()->id);
+                    })
+                    ->when(request('source') == 'user', function($query){
+                        $query->where('user_id', request('user'));
+                    })
+                    ->when(request('trendy') == true, function($query){
+                        $query->trendy();
+                    })
+                    ->latest()
                     ->paginate(20);
 
         return response()->json(

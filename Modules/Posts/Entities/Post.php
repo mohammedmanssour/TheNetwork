@@ -2,6 +2,7 @@
 
 namespace Modules\Posts\Entities;
 
+use App\User;
 use Plank\Mediable\Mediable;
 use Modules\Posts\Traits\CanBeLiked;
 use Illuminate\Database\Eloquent\Model;
@@ -28,16 +29,26 @@ class Post extends Model
     --------------------------------------------------- */
     public function user()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    /*----------------------------------------------------
+    * scopes
+    --------------------------------------------------- */
+    public function scopeFromFeed($query)
     {
-        return $this->morphMany(
-            \Modules\Comments\Entities\Comment::class,
-            'commentable',
-            'model_type',
-            'model_id'
+        return $query->whereIn(
+            'user_id',
+            \DB::table('followings')
+                ->select('model_id')
+                ->where('user_id', auth()->user()->id)
+                ->where('model_type', User::class)
         );
+    }
+
+    public function scopeTrendy($query)
+    {
+        return $query->orderBy('comments_count', 'desc')
+                ->orderBy('liked_by_count', 'desc');
     }
 }

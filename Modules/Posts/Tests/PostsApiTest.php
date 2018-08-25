@@ -33,6 +33,61 @@ class PostsApiTest extends TestCase
     }
 
     /** @test */
+    public function can_get_feed_post()
+    {
+        $this->withoutExceptionHandling();
+        //create random posts
+        factory(Post::class, 20)->create();
+
+        //create followings and create posts for followings
+        factory(User::class,11)->create()->each(function($user){
+            $this->user->follow($user);
+            factory(Post::class, 3)->create([
+                'user_id' => $user->id
+            ]);
+        });
+
+
+        $this->sendPostsRequest('api/posts?source=feed', 20);
+        $this->sendPostsRequest('api/posts?source=feed&page=2', 13);
+        $this->json('get', 'api/posts?source=feed&page=3')
+            ->assertJsonCount(0, 'data');
+    }
+
+    /** @test */
+    public function can_get_my_posts()
+    {
+        //create random posts
+        factory(Post::class,20)->create();
+
+        factory(Post::class, 30)->create([
+            'user_id' => $this->user->id
+        ]);
+
+        $this->sendPostsRequest('api/posts?source=me', 20);
+        $this->sendPostsRequest('api/posts?source=me&page=2', 10);
+        $this->json('get', 'api/posts?source=me&page=3')
+            ->assertJsonCount(0, 'data');
+    }
+
+    /** @test */
+    public function can_get_user_posts()
+    {
+        $user = factory(User::class)->create();
+        //create random posts
+        factory(Post::class, 20)->create();
+
+        factory(Post::class, 30)->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->sendPostsRequest("api/posts?source=user&user={$user->id}", 20);
+        $this->sendPostsRequest("api/posts?source=user&user={$user->id}&page=2", 10);
+        $this->json('get', "api/posts?source=user&user={$user->id}&page=3")
+            ->assertJsonCount(0, 'data');
+    }
+
+    /** @test */
     public function user_can_create_new_posts()
     {
         $this->withoutExceptionHandling();
@@ -153,7 +208,7 @@ class PostsApiTest extends TestCase
             ->assertRequestIsSuccessful()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'content', 'user', 'images', 'comments_count']
+                    '*' => ['id', 'content', 'user', 'images', 'comments_count', 'likes_count']
                 ]
             ])
             ->assertJsonCount($expectedCount, 'data');
@@ -173,7 +228,7 @@ class PostsApiTest extends TestCase
         $res = $this->json($method, $uri,$data)
                 ->assertRequestIsSuccessful()
                 ->assertJsonStructure([
-                    'data' => ['id', 'content', 'user', 'images', 'comments_count']
+                    'data' => ['id', 'content', 'user', 'images', 'comments_count', 'likes_count']
                 ])
                 ->assertJsonFragment([
                     'content' => 'This is post content',

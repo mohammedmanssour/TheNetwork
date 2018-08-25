@@ -25,7 +25,8 @@ class PostTransformer extends TransformerAbstract
             'id' => $model->id,
             'content' => $model->content,
             'images' => $model->getMedia('images')->pluck('id')->all(),
-            'comments_count' => $model->comments_count
+            'comments_count' => $model->comments_count,
+            'likes_count' => $model->liked_by_count
         ];
     }
 
@@ -37,6 +38,6 @@ class PostTransformer extends TransformerAbstract
      */
     public function includeUser($model)
     {
-        return $this->item($model->user, new UserTransformer);
+        return $this->item($model->user, (new UserTransformer)->onlyBasic());
     }
 }

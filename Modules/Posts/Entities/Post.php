@@ -30,14 +30,4 @@ class Post extends Model
     {
         return $this->belongsTo(\App\User::class);
     }
-
-    public function comments()
-    {
-        return $this->morphMany(
-            \Modules\Comments\Entities\Comment::class,
-            'commentable',
-            'model_type',
-            'model_id'
-        );
-    }
 }

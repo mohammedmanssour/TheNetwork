@@ -23,6 +23,9 @@ class PostsController extends Controller
                     ->with('user.media')
                     ->withMedia(['images'])
                     ->withCount('comments')
+                    ->when(request('source') == 'feed', function($query){
+                        $query->fromFeed();
+                    })
                     ->paginate(20);
 
         return response()->json(

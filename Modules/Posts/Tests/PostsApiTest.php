@@ -33,6 +33,26 @@ class PostsApiTest extends TestCase
     }
 
     /** @test */
+    public function can_get_feed_post()
+    {
+        $this->withoutExceptionHandling();
+        //create random posts
+        factory(Post::class, 20)->create();
+
+        //create followings and create posts for followings
+        factory(User::class,11)->create()->each(function($user){
+            $this->user->follow($user);
+            factory(Post::class, 3)->create([
+                'user_id' => $user->id
+            ]);
+        });
+
+
+        $this->sendPostsRequest('api/posts?source=feed', 20);
+        $this->sendPostsRequest('api/posts?source=feed&page=2', 13);
+    }
+
+    /** @test */
     public function user_can_create_new_posts()
     {
         $this->withoutExceptionHandling();

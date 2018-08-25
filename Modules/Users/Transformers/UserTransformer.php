@@ -39,6 +39,8 @@ class UserTransformer extends TransformerAbstract
 
         $info['cover'] = optional($model->firstMedia('cover'))->id;
         $info['description'] = $model->description;
+        $info['followers_count'] = $model->followers_count;
+        $info['following_count'] = $model->following_count;
 
         if(!$this->includeEmail){
             return $info;

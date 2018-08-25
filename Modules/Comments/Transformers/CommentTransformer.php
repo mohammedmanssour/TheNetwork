@@ -35,7 +35,7 @@ class CommentTransformer extends TransformerAbstract
      */
     public function includeUser($model)
     {
-        return $this->item($model->user, new UserTransformer);
+        return $this->item($model->user, (new UserTransformer)->onlyBasic());
     }
 
 }

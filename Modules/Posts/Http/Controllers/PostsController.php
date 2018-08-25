@@ -29,6 +29,9 @@ class PostsController extends Controller
                     ->when(request('source') == 'me', function($query){
                         $query->where('user_id', auth()->user()->id);
                     })
+                    ->when(request('source') == 'user', function($query){
+                        $query->where('user_id', request('user'));
+                    })
                     ->paginate(20);
 
         return response()->json(

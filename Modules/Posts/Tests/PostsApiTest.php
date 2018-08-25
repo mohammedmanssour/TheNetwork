@@ -66,7 +66,24 @@ class PostsApiTest extends TestCase
 
         $this->sendPostsRequest('api/posts?source=me', 20);
         $this->sendPostsRequest('api/posts?source=me&page=2', 10);
-        $this->json('get', 'api/posts?source=feed&page=3')
+        $this->json('get', 'api/posts?source=me&page=3')
+            ->assertJsonCount(0, 'data');
+    }
+
+    /** @test */
+    public function can_get_user_posts()
+    {
+        $user = factory(User::class)->create();
+        //create random posts
+        factory(Post::class, 20)->create();
+
+        factory(Post::class, 30)->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->sendPostsRequest("api/posts?source=user&user={$user->id}", 20);
+        $this->sendPostsRequest("api/posts?source=user&user={$user->id}&page=2", 10);
+        $this->json('get', "api/posts?source=user&user={$user->id}&page=3")
             ->assertJsonCount(0, 'data');
     }
 

@@ -23,6 +23,7 @@ class PostsController extends Controller
                     ->with('user.media')
                     ->withMedia(['images'])
                     ->withCount('comments')
+                    ->withCount('likedBy')
                     ->when(request('source') == 'feed', function($query){
                         $query->fromFeed();
                     })

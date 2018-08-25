@@ -87,4 +87,14 @@ class FollowingSystemTest extends TestCase
 
         $this->assertEquals(22, $this->user->followers_count);
     }
+
+    /** @test */
+    public function can_check_if_user_is_following_other_user()
+    {
+        $user = factory(User::class)->create();
+
+        $this->user->follow($user);
+
+        $this->assertTrue($this->user->isFollowing($user));
+    }
 }

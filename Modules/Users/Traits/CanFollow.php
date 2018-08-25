@@ -38,6 +38,20 @@ trait CanFollow {
         return $this;
     }
 
+    /**
+     * check if current user is following $model
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return boolean
+     */
+    public function isFollowing(Model $model)
+    {
+        return $this->following()
+                ->where('model_id', $model->id)
+                ->where('model_type', get_class($model))
+                ->exists();
+    }
+
     /*----------------------------------------------------
     * Attributes
     --------------------------------------------------- */

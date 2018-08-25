@@ -31,7 +31,7 @@ class LoginController extends Controller
         return response()->json(
             fractal()
                 ->item($user)
-                ->transformWith($userTransformer)
+                ->transformWith($userTransformer->withEmail())
                 ->addMeta(['token' => $user->api_token])
                 ->withContentMeta()
                 ->toArray(),

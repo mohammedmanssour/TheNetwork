@@ -21,7 +21,7 @@ class UserController extends Controller
                 ->item(
                     auth()->user()->loadMedia(['profile_picture', 'cover'])
                 )
-                ->transformWith($userTransformer)
+                ->transformWith($userTransformer->withEmail())
                 ->withContentMeta()
                 ->toArray(),
             200
@@ -47,7 +47,7 @@ class UserController extends Controller
         return response()->json(
             fractal()
             ->item($user)
-            ->transformWith($userTransformer)
+            ->transformWith($userTransformer->withEmail())
             ->withContentMeta()
             ->toArray(),
             200

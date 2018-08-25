@@ -6,7 +6,20 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
+    /**
+     * only get basic info for user
+     *
+     * @var boolean
+     */
     protected $basic = false;
+
+    /**
+     * include email in transformer
+     *
+     * @var boolean
+     */
+    protected $includeEmail = false;
+
     /**
      * A Fractal transformer.
      *
@@ -24,9 +37,14 @@ class UserTransformer extends TransformerAbstract
             return $info;
         }
 
-        $info['email'] = $model->email;
         $info['cover'] = optional($model->firstMedia('cover'))->id;
         $info['description'] = $model->description;
+
+        if(!$this->includeEmail){
+            return $info;
+        }
+
+        $info['email'] = $model->email;
 
         return $info;
     }
@@ -39,6 +57,17 @@ class UserTransformer extends TransformerAbstract
     public function onlyBasic()
     {
         $this->basic = true;
+        return $this;
+    }
+
+    /**
+     * notify transformer to include email in info
+     *
+     * @return \Modules\Users\Transformers\UserTransformer
+     */
+    public function withEmail()
+    {
+        $this->includeEmail = true;
         return $this;
     }
 }

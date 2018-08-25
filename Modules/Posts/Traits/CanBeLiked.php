@@ -19,8 +19,8 @@ trait CanBeLiked {
     --------------------------------------------------- */
     public function getLikedByCountAttribute()
     {
-        if(isset($this->getAttributes()['likedBy_count'])){
-            return $this->getAttributes()['likedBy_count'];
+        if(isset($this->getAttributes()['liked_by_count'])){
+            return $this->getAttributes()['liked_by_count'];
         }
 
         return $this->likedBy()->count();

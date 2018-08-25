@@ -33,6 +33,10 @@ class PostsController extends Controller
                     ->when(request('source') == 'user', function($query){
                         $query->where('user_id', request('user'));
                     })
+                    ->when(request('trendy') == true, function($query){
+                        $query->trendy();
+                    })
+                    ->latest()
                     ->paginate(20);
 
         return response()->json(

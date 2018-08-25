@@ -45,4 +45,10 @@ class Post extends Model
                 ->where('model_type', User::class)
         );
     }
+
+    public function scopeTrendy($query)
+    {
+        return $query->orderBy('comments_count', 'desc')
+                ->orderBy('liked_by_count', 'desc');
+    }
 }

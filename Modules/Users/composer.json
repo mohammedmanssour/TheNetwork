@@ -1,0 +1,28 @@
+{
+    "name": "mohammedmanssour/users",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mohammed Manssour",
+            "email": "manssour.mohammed@gmail.com"
+        }
+    ],
+    "require": {
+        "spatie/laravel-fractal" : "5.4.*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Users\\Providers\\UsersServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Users\\": ""
+        }
+    }
+}

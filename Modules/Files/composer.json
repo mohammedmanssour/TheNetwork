@@ -1,0 +1,28 @@
+{
+    "name": "mohammedmanssour/files",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mohammed Manssour",
+            "email": "manssour.mohammed@gmail.com"
+        }
+    ],
+    "require": {
+        "plank/laravel-mediable" : "2.7.3"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Files\\Providers\\FilesServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Files\\": ""
+        }
+    }
+}

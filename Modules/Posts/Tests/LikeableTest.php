@@ -71,4 +71,42 @@ class LikeableTest extends TestCase
         $post = factory(Post::class)->create();
         $this->assertEquals(0, $this->user->hasLiked($post));
     }
+
+    /** @test */
+    public function check_if_post_was_liked_by_current_user()
+    {
+        $post = factory(Post::class)->create();
+        \DB::table('likes')->insert([
+            'user_id' => $this->user->id,
+            'model_id' => $post->id,
+            'model_type' => get_class($post)
+        ]);
+
+        $this->actingAs($this->user);
+
+        $this->assertTrue($post->current_user_like_status);
+
+        $post = factory(Post::class)->create();
+        $this->assertFalse($post->current_user_like_status);
+    }
+
+    /** @test */
+    public function check_if_withCurrentUserLikeStatus_scope_working_fine()
+    {
+        $post = factory(Post::class)->create();
+        \DB::table('likes')->insert([
+            'user_id' => $this->user->id,
+            'model_id' => $post->id,
+            'model_type' => get_class($post)
+        ]);
+
+        $this->actingAs($this->user);
+
+        $post = Post::withCurrentUserLikeStatus()->first();
+        $this->assertEquals(1,$post->current_user_like_status);
+
+        $post = factory(Post::class)->create();
+        $post = Post::withCurrentUserLikeStatus()->where('id', $post->id)->first();
+        $this->assertEquals(0, $post->current_user_like_status);
+    }
 }

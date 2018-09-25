@@ -27,7 +27,8 @@ class PostTransformer extends TransformerAbstract
             'images' => $model->getMedia('images')->pluck('id')->all(),
             'comments_count' => $model->comments_count,
             'likes_count' => $model->liked_by_count,
-            'liked_by_user' => $model->current_user_like_status ? true : false
+            'liked_by_user' => $model->current_user_like_status ? true : false,
+            'created_at' => $model->created_at->format('Y-m-d H:i')
         ];
     }
 
